@@ -7,7 +7,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import SignUp from "./SignUp";
 import Login from "./Login";
 import FreeComponent from "./FreeComponent";
-import AuthComponent from "./AuthComponent";
+import Home from "./Home";
 
 function App() {
   return (
@@ -16,8 +16,8 @@ function App() {
         <Route exact path="/" element={<Login />} />
         <Route exact path="/signup" element={<SignUp />} />
         <Route exact path="/free" element={<FreeComponent />} />
-        <Route path="/auth" element={
-            <ProtectedRoutes children={<AuthComponent />}/>
+        <Route path="/home" element={
+            <ProtectedRoutes children={<Home />}/>
           }
         />
       </Routes>

@@ -39,7 +39,7 @@ export default function SignUp() {
     }
 
     if(token) {
-        return <Navigate to='/auth' replace />
+        return <Navigate to='/home' replace />
     }
 
     return (

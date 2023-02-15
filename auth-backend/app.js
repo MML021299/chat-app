@@ -112,6 +112,17 @@ app.post("/login", (request, response) => {
     });
 })
 
+// get list of users
+app.get("/users", (request, response) => {
+  try {
+    User.find({}).then((users) => {
+      response.json({ message: users })
+    })
+  } catch (error) {
+    response.json({ message: error })
+  }
+})
+
 // free endpoint
 app.get("/free-endpoint", (request, response) => {
   response.json({ message: "You are free to access me anytime" });
@@ -119,7 +130,9 @@ app.get("/free-endpoint", (request, response) => {
 
 // authentication endpoint
 app.get("/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
+  console.log(request)
+  // response.json({ message: "You are authorized to access me" });
+  response.json({ message: `${request.user.userEmail}` });
 });
 
 module.exports = app;
