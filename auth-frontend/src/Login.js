@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const [login, setLogin] = useState(false);
 
     const cookies = new Cookies();
@@ -35,7 +36,7 @@ export default function Login() {
             window.location.href = "/home";
         })
         .catch((error) => {
-            error = new Error();
+            setError(error.response.data.message)
         });
     }
 
@@ -83,7 +84,7 @@ export default function Login() {
                     {login ? (
                         <p className="text-success">You Are Logged in Successfully</p>
                     ) : (
-                        <p className="text-danger">You Are Not Logged in</p>
+                        <p className="text-danger">{error}</p>
                     )}
                     <label>Don't have an account? <a href='/signup'>Sign Up</a> now</label>
                 </Form>

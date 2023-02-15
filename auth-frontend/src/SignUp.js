@@ -7,6 +7,7 @@ import { Navigate } from "react-router-dom";
 export default function SignUp() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const [register, setRegister] = useState(false);
 
     const cookies = new Cookies();
@@ -31,11 +32,8 @@ export default function SignUp() {
             setRegister(true);
         })
         .catch((error) => {
-            error = new Error();
+            setError(error.response.data.message)
         });
-
-        // make a popup alert showing the "submitted" text
-        // alert("Submited");
     }
 
     if(token) {
@@ -82,7 +80,7 @@ export default function SignUp() {
                     {register ? (
                         <p className="text-success">You Are Registered Successfully</p>
                     ) : (
-                        <p className="text-danger">You Are Not Registered</p>
+                        <p className="text-danger">{error}</p>
                     )}
                     <label>Already have an account? <a href='/'>Log In</a> now</label>
                 </Form>
