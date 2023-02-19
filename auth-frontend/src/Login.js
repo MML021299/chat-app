@@ -42,7 +42,7 @@ export default function Login() {
     }
 
     if(token) {
-        return <Navigate to='/auth' replace />
+        return <Navigate to='/home' replace />
     }
 
     return (
