@@ -53,8 +53,16 @@ app.post("/register", (request, response) => {
       });
     })
     .catch((error) => {
+      var message = "";
+      if (error.name === "ValidationError") {
+        message = Object.values(error.errors).map(e => e.message);
+      } else if (error.code === 11000) {
+        message = "Email already registered";
+      } else {
+        message = "Registration Failed (Unknown Error)";
+      }
       response.status(500).send({
-        message: "Error creating user",
+        message,
         error,
       });
     });

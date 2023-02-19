@@ -26,14 +26,21 @@ export default function SignUp() {
     const handleSubmit = (e) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
-        // make the API call
-        axios(configuration)
-        .then((result) => {
-            setRegister(true);
-        })
-        .catch((error) => {
-            setError(error.response.data.message)
-        });
+
+        if (password) {
+            // make the API call
+            axios(configuration)
+            .then(() => {
+                setRegister(true);
+                alert('Account registered successfully!')
+                window.location.href = "/";
+            })
+            .catch((error) => {
+                setError(error.response.data.message)
+            });
+        } else {
+            setError("Please provide a password!")
+        }
     }
 
     if(token) {
