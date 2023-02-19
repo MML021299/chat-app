@@ -32,6 +32,7 @@ export default function Login() {
             cookies.set("TOKEN", result.data.token, {
                 path: "/",
             });
+            alert('Login Success!')
             // redirect user to the auth page
             window.location.href = "/home";
         })
