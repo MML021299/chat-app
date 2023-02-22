@@ -1,5 +1,6 @@
 const http = require('http');
 const app = require('./app');
+const chatServer = require('./server');
 
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -14,6 +15,9 @@ const normalizePort = val => {
 };
 const port = normalizePort(process.env.PORT || '3001');
 app.set('port', port);
+
+const chatPort = normalizePort(process.env.PORT || '3002');
+chatServer.set('port', chatPort);
 
 const errorHandler = error => {
   if (error.syscall !== 'listen') {
