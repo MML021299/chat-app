@@ -8,6 +8,7 @@ import SignUp from "./SignUp";
 import Login from "./Login";
 import FreeComponent from "./FreeComponent";
 import Home from "./Home";
+import Chat from "./Chat";
 
 function App() {
   return (
@@ -18,6 +19,14 @@ function App() {
         <Route exact path="/free" element={<FreeComponent />} />
         <Route path="/home" element={
             <ProtectedRoutes children={<Home />}/>
+          }
+        />
+        <Route path="/home" element={
+            <ProtectedRoutes children={<Home />}/>
+          }
+        />
+        <Route path="/chat" element={
+            <ProtectedRoutes children={<Chat />}/>
           }
         />
       </Routes>

@@ -50,6 +50,11 @@ export default function Home() {
         // redirect user to the landing page
         window.location.href = "/";
     }
+
+    const enterChat = () => {
+        console.log('entering room')
+        window.location.href = "/chat";
+    }
     
     return (
         <div>
@@ -72,7 +77,7 @@ export default function Home() {
                                     </ul>
                                 </Col>
                                 <Col xs={4} className="d-flex justify-content-end">
-                                    <button onClick={() => console.log(e.email)}>Chat</button>
+                                    <button onClick={enterChat}>Chat</button>
                                 </Col>
                             </Row>
                         )
