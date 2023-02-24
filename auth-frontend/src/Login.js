@@ -4,6 +4,8 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import { Navigate } from "react-router-dom";
 
+import io from "socket.io-client";
+
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -22,6 +24,12 @@ export default function Login() {
         },
     };
 
+    const socket = io.connect(
+        "http://localhost:3002",
+        { transports: ["websocket"] },
+        { autoConnect: false }
+      );
+
     const handleSubmit = (e) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
@@ -32,6 +40,9 @@ export default function Login() {
             cookies.set("TOKEN", result.data.token, {
                 path: "/",
             });
+            socket.auth = { userId: email };
+            socket.connect();
+            socket.emit("login", { userId: email });
             alert('Login Success!')
             // redirect user to the auth page
             window.location.href = "/home";

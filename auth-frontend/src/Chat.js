@@ -11,33 +11,6 @@ export default function Chat() {
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);
 
-    useEffect(() => {
-        const socket = new WebSocket('ws://localhost:3002');
-        socket.onopen = () => {
-            console.log("Websocket connected")
-            setWs(socket);
-        }
-        socket.onmessage = (e) => {
-            console.log(e)
-            if(e.data instanceof Blob) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    console.log("Result: " + reader.result);
-                    setChat([ ...chat, reader.result ]);
-                };
-                reader.readAsText(e.data)
-            } else {
-                setChat([ ...chat, e.data ]);
-            }
-        }
-        socket.onclose = () => {
-            console.log("Websocket disconnected");
-        }
-        return () => {
-            socket.close();
-        }
-    }, [chat])
-
     const handleInputChange = (e) => {
         setMessage(e.target.value);
     };
@@ -47,20 +20,6 @@ export default function Chat() {
         ws.send(message);
         setMessage('');
     };
-
-    // const socket = new WebSocket('ws://localhost:3002');
-
-    // socket.addEventListener('open', (e) => {
-    //     console.log("Connected to WS server");
-    // });
-
-    // socket.addEventListener('message', (e) => {
-    //     console.log(`Message from server: ${e.data}`)
-    // })
-
-    // socket.addEventListener('error', (e) => {
-    //     console.log(e)
-    // })
     
     return (
         <div className="AppChat">
