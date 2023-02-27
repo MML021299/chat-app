@@ -16,6 +16,7 @@ export default function Chat({ socket }) {
         console.log(data)
         setChat((list) => [...list, data]);
       });
+      return () => socket.removeListener("receive_message");
     }, [])
     
     const handleInputChange = (e) => {
