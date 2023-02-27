@@ -6,19 +6,32 @@ import { Navigate } from "react-router-dom";
 
 import './Chat.css'
 
-export default function Chat() {
-    const [ws, setWs] = useState(null);
+export default function Chat({ socket }) {
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);
 
+    useEffect(() => {
+      socket.emit("join_room", "room1");
+      socket.on("receive_message", (data) => {
+        console.log(data)
+        setChat((list) => [...list, data]);
+      });
+    }, [])
+    
     const handleInputChange = (e) => {
         setMessage(e.target.value);
     };
     
-    const sendMessage = (e) => {
-        e.preventDefault();
-        ws.send(message);
-        setMessage('');
+    const sendMessage = async () => {
+      const messageContent = {
+        room: "room1",
+        content: {
+            message: message,
+        },
+      };
+      await socket.emit("send_message", messageContent);
+      setChat((list) => [...list, messageContent.content]);
+      setMessage('');
     };
     
     return (
@@ -38,7 +51,7 @@ export default function Chat() {
                     >
                         <div className="messageIndividual">
                         {/* {val.author}: {val.message} */}
-                        {msg}
+                        {msg.message}
                         </div>
                     </div>
                 );

@@ -10,6 +10,10 @@ import FreeComponent from "./FreeComponent";
 import Home from "./Home";
 import Chat from "./Chat";
 
+import io from "socket.io-client";
+
+const socket = io.connect("http://localhost:3002");
+
 function App() {
   return (
     <Container>
@@ -21,12 +25,8 @@ function App() {
             <ProtectedRoutes children={<Home />}/>
           }
         />
-        <Route path="/home" element={
-            <ProtectedRoutes children={<Home />}/>
-          }
-        />
         <Route path="/chat" element={
-            <ProtectedRoutes children={<Chat />}/>
+            <ProtectedRoutes children={<Chat socket={socket} />}/>
           }
         />
       </Routes>
