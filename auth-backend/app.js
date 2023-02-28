@@ -38,34 +38,43 @@ app.get("/", (request, response, next) => {
 
 app.post("/register", (request, response) => {
   bcrypt.hash(request.body.password, 10)
-  .then((hashedPassword) => {
+  .then(async (hashedPassword) => {
     // create a new user instance and collect the data
     const user = new User({
       email: request.body.email,
+      username: request.body.username,
       password: hashedPassword,
     });
 
-    // save the new user
-    user.save().then((result) => {
-      response.status(201).send({
-        message: "User Created Successfully",
-        result,
-      });
-    })
-    .catch((error) => {
-      var message = "";
-      if (error.name === "ValidationError") {
-        message = Object.values(error.errors).map(e => e.message);
-      } else if (error.code === 11000) {
-        message = "Email already registered";
-      } else {
-        message = "Registration Failed (Unknown Error)";
-      }
+    const usernameExists = await User.find({ username: request.body.username });
+    if(usernameExists.length > 0){
       response.status(500).send({
-        message,
-        error,
+        message: "Username already taken",
       });
-    });
+    } else {
+      // save the new user
+      user.save().then((result) => {
+        response.status(201).send({
+          message: "User Created Successfully",
+          result,
+        });
+      })
+      .catch((error) => {
+        console.log(error)
+        var message = "";
+        if (error.name === "ValidationError") {
+          message = Object.values(error.errors).map(e => e.message);
+        } else if (error.code === 11000) {
+          message = "Email already registered";
+        } else {
+          message = "Registration Failed (Unknown Error)";
+        }
+        response.status(500).send({
+          message,
+          error,
+        });
+      });
+    }
   })
   .catch((e) => {
     response.status(500).send({
@@ -76,7 +85,7 @@ app.post("/register", (request, response) => {
 });
 
 app.post("/login", (request, response) => {
-  User.findOne({ email: request.body.email })
+  User.findOne({ username: request.body.username })
     .then((user) => {
       bcrypt.compare(request.body.password, user.password)
       .then((passwordCheck) => {
@@ -92,7 +101,7 @@ app.post("/login", (request, response) => {
         const token = jwt.sign(
           {
             userId: user._id,
-            userEmail: user.email,
+            userUsername: user.username,
           },
           "RANDOM-TOKEN",
           { expiresIn: "24h" }
@@ -101,7 +110,7 @@ app.post("/login", (request, response) => {
         //   return success response
         response.status(200).send({
           message: "Login Successful",
-          email: user.email,
+          username: user.username,
           token,
         });
       })
@@ -114,7 +123,7 @@ app.post("/login", (request, response) => {
     })
     .catch((e) => {
       response.status(404).send({
-        message: "Email not found",
+        message: "Username not found",
         e,
       });
     });
@@ -140,7 +149,7 @@ app.get("/free-endpoint", (request, response) => {
 app.get("/auth-endpoint", auth, (request, response) => {
   console.log(request)
   // response.json({ message: "You are authorized to access me" });
-  response.json({ message: `${request.user.userEmail}` });
+  response.json({ message: `${request.user.userUsername}` });
 });
 
 module.exports = app;

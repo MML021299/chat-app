@@ -6,6 +6,7 @@ import { Navigate } from "react-router-dom";
 
 export default function SignUp() {
     const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [register, setRegister] = useState(false);
@@ -19,6 +20,7 @@ export default function SignUp() {
         url: "http://localhost:3001/register",
         data: {
           email,
+          username,
           password,
         },
       };
@@ -36,6 +38,7 @@ export default function SignUp() {
                 window.location.href = "/";
             })
             .catch((error) => {
+                console.log(error)
                 setError(error.response.data.message)
             });
         } else {
@@ -64,6 +67,18 @@ export default function SignUp() {
                     />
                     </Form.Group>
 
+                    {/* username */}
+                    <Form.Group controlId="formBasicUsername">
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control
+                        type="text"
+                        name="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Enter username"
+                    />
+                    </Form.Group>
+
                     {/* password */}
                     <Form.Group controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
@@ -72,7 +87,7 @@ export default function SignUp() {
                         name="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
+                        placeholder="Enter password"
                     />
                     </Form.Group>
 
