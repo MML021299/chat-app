@@ -1,4 +1,5 @@
 # auth-sample
+#Chat-App
 
 Before running both frontend and backend, install all dependencies first on both frontend and backend directory
 npm install
