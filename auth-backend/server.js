@@ -1,6 +1,8 @@
 const express = require('express');
 const server = express();
 
+const Message = require("./db/messageModel");
+
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
@@ -33,8 +35,21 @@ io.on("connection", (socket) => {
     });
   
     socket.on("send_message", (data) => {
-      console.log(data)
-      socket.to(data.room).emit('receive_message', data.content)
+      const messageData = new Message({
+        room: data.room,
+        author: data.content.author,
+        message: data.content.message
+      });
+
+      messageData.save()
+      .then(() => {
+        console.log("Message saved to database")
+        console.log(data)
+        socket.to(data.room).emit('receive_message', data.content)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     });
   
     socket.on("disconnect", () => {
