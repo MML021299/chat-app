@@ -9,8 +9,29 @@ import './Chat.css'
 export default function Chat({ socket }) {
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    const [currentUser, setCurrentUser] = useState("");
+
+    // set configurations for the API call here
+    const getCurrentUserConfig = {
+      method: "get",
+      url: "http://localhost:3001/auth-endpoint",
+      headers: {
+          Authorization: `Bearer ${token}`,
+      },
+  };
 
     useEffect(() => {
+      axios(getCurrentUserConfig)
+        .then((result) => {
+            // assign the message in our result to the message we initialized above
+            setCurrentUser(result.data.message);
+        })
+        .catch((error) => {
+            error = new Error();
+        });
+
       socket.emit("join_room", "room1");
       socket.on("receive_message", (data) => {
         console.log(data)
@@ -27,6 +48,7 @@ export default function Chat({ socket }) {
       const messageContent = {
         room: "room1",
         content: {
+            author: currentUser,
             message: message,
         },
       };
@@ -40,19 +62,14 @@ export default function Chat({ socket }) {
         <div className="chatContainer">
           <div className="messages" id="msg">
             {chat.map((msg, index) => {
-                // console.log(msg)
-                // return(
-                //     <li key={index}>asdf</li>
-                // )
                 return (
                     <div
                         key={index}
                         className="messageContainer"
-                    //   id={val.author === authState.username ? "You" : "Other"}
+                        id={msg.author === currentUser ? "You" : "Other"}
                     >
                         <div className="messageIndividual">
-                        {/* {val.author}: {val.message} */}
-                        {msg.message}
+                          {msg.author}: {msg.message}
                         </div>
                     </div>
                 );
