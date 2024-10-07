@@ -6,7 +6,7 @@ import { Button, Row, Col } from "react-bootstrap";
 export default function Home() {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
-    const [currentUser, setCurrentUser] = useState("");
+    const [currentUser, setCurrentUser] = useState([]);
     const [users, setUsers] = useState([]);
 
     // set configurations for the API call here
@@ -27,7 +27,7 @@ export default function Home() {
         axios(getCurrentUserConfig)
         .then((result) => {
             // assign the message in our result to the message we initialized above
-            setCurrentUser(result.data.message);
+            setCurrentUser(result.data.user);
         })
         .catch((error) => {
             error = new Error();
@@ -60,7 +60,7 @@ export default function Home() {
         <div>
             <div className="text-center">
                 <h1 className="text-center">Home</h1>
-                <h3 className="text-center">Welcome, {currentUser}</h3>
+                <h3 className="text-center">Welcome, {currentUser.userName}</h3>
                 <Button type="submit" variant="danger" onClick={() => logout()}>
                     Logout
                 </Button>
@@ -68,7 +68,7 @@ export default function Home() {
             <div className="mx-auto col-5 d-block mt-5 border border-3 border-dark">
                 <h2 className="text-center">Chat with other users </h2>
                 <div>
-                    {users.map((e, index) => {
+                    {users.filter(user => user._id !== currentUser.userId).map((e, index) => {
                         return (
                             <Row className="align-items-center">
                                 <Col xs={8} className="d-flex justify-content-start">

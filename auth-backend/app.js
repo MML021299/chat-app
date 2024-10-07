@@ -9,6 +9,7 @@ const auth = require("./auth");
 // require database connection 
 const dbConnect = require("./db/dbConnect");
 const User = require("./db/userModel");
+const Message = require("./db/messageModel");
 
 // execute database connection 
 dbConnect();
@@ -101,7 +102,7 @@ app.post("/login", (request, response) => {
         const token = jwt.sign(
           {
             userId: user._id,
-            userUsername: user.username,
+            userName: user.username,
           },
           "RANDOM-TOKEN",
           { expiresIn: "24h" }
@@ -149,7 +150,18 @@ app.get("/free-endpoint", (request, response) => {
 app.get("/auth-endpoint", auth, (request, response) => {
   console.log(request)
   // response.json({ message: "You are authorized to access me" });
-  response.json({ message: `${request.user.userUsername}` });
+  response.json({ user: request.user });
+});
+
+// fetch chat history
+app.get("/chat-history", (request, response) => {
+  try {
+    Message.find({room: request.query.room}).then((msg) => {
+      response.json({ messages: msg })
+    })
+  } catch (error) {
+    response.json({ message: error })
+  }
 });
 
 module.exports = app;
