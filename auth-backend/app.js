@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto")
 
 const auth = require("./auth");
 
@@ -40,11 +41,14 @@ app.get("/", (request, response, next) => {
 app.post("/register", (request, response) => {
   bcrypt.hash(request.body.password, 10)
   .then(async (hashedPassword) => {
+    // create unique ID for new users
+    const uniqueId = crypto.randomBytes(3*4).toString('base64')
     // create a new user instance and collect the data
     const user = new User({
       email: request.body.email,
       username: request.body.username,
       password: hashedPassword,
+      uniqueId
     });
 
     const usernameExists = await User.find({ username: request.body.username });
@@ -148,7 +152,7 @@ app.get("/free-endpoint", (request, response) => {
 
 // authentication endpoint
 app.get("/auth-endpoint", auth, (request, response) => {
-  console.log(request)
+    console.log(request)
   // response.json({ message: "You are authorized to access me" });
   response.json({ user: request.user });
 });
