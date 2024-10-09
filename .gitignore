@@ -1,19 +1,19 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/auth-backend/node_modules
-/auth-backend/.pnp
-/auth-frontend/node_modules
-/auth-frontend/.pnp
+/chat-backend/node_modules
+/chat-backend/.pnp
+/chat-frontend/node_modules
+/chat-frontend/.pnp
 .pnp.js
 
 # testing
-/auth-backend/coverage
-/auth-frontend/coverage
+/chat-backend/coverage
+/chat-frontend/coverage
 
 # production
-/auth-backend/build
-/auth-frontend/build
+/chat-backend/build
+/chat-frontend/build
 
 # misc
 .DS_Store
