@@ -28,6 +28,145 @@
   color: #61dafb;
 }
 
+.app {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 90vh; /* Full viewport height */
+  background-color: #f9f9f9; /* Optional background color */
+}
+
+
+.contact-list {
+  width: 200px;
+  min-width: 200px;
+  border-right: 1px solid #ccc;
+  padding: 10px;
+}
+
+.contact-list h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+
+.contact {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.contact:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-window {
+  flex-grow: 1;
+  padding: 10px;
+  max-width: 575px;
+}
+
+.chat-container {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  width: 80%;
+  max-width: 800px;
+  height: 80%;
+  max-height: 1000px;
+  background-color: #fff;
+  padding: 10px; /* Add padding for spacing */
+}
+
+.chat-input {
+  flex-grow: 1; /* Allow the input to grow */
+  width: 100%; /* Ensure the input takes full width */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Optional rounded corners */
+  margin-right: 10px; /* Space between input and button */
+  box-sizing: border-box; /* Include padding and border in width */
+}
+
+.chat-input:focus {
+  border-color: #007bff; /* Change border color on focus */
+  outline: none; /* Remove outline */
+}
+
+.input-container {
+  display: flex;
+  align-items: center; /* Center button and input vertically */
+  width: 100%; /* Ensure the container takes full width */
+}
+
+.messages {
+  height: 80%; /* Set a maximum height for scrolling */
+  overflow-y: auto; /* Allow scrolling if messages exceed max height */
+  padding: 10px;
+  border: 1px solid #ccc; /* Border for distinction */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #f9f9f9; /* Light background color */
+  margin-bottom: 10px; /* Space below messages */
+  display: flex;
+  flex-direction: column; /* Stack messages vertically */
+}
+
+.message {
+  padding: 8px 12px; /* Padding for each message */
+  margin: 5px 0; /* Space between messages */
+  border-radius: 6px; /* Rounded corners for messages */
+  max-width: 70%; /* Limit message width */
+  word-wrap: break-word; /* Wrap long words */
+  overflow-wrap: break-word; /* Ensure long words break properly */
+  white-space: pre-wrap; /* Preserve whitespace and wrap */
+  align-self: flex-start; /* Default alignment */
+}
+
+/* Style for received messages (left) */
+.received {
+  background-color: #e0f7fa; /* Light blue for received messages */
+}
+
+/* Style for sent messages (right) */
+.sent {
+  background-color: #ffecb3; /* Light yellow for sent messages */
+  align-self: flex-end; /* Align to the right */
+}
+
+/* Style for sent messages (right) */
+.sent {
+  background-color: #ffecb3; /* Light yellow for sent messages */
+  align-self: flex-end; /* Align to the right */
+}
+
+button {
+  margin-left: auto; /* Push the button to the right */
+  padding: 10px 15px; /* Padding for the button */
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between; /* Space between title and button */
+  align-items: center; /* Center items vertically */
+  width: 100%; /* Full width */
+}
+
+h1 {
+  margin: 0; /* Remove default margin */
+  flex: 1; /* Allow title to take up available space */
+  text-align: center; /* Center the title text */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -18,15 +18,36 @@ export default function Chat({ socket }) {
       method: "get",
       url: "http://localhost:3001/auth-endpoint",
       headers: {
-          Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
-  };
+    };
+
+    const params = new URLSearchParams({
+        // Hardcoded for now
+        room: 'room1'
+    })
+
+    const getChatHistory = {
+      method: "get",
+      url: `http://localhost:3001/chat-history?${params}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
     useEffect(() => {
       axios(getCurrentUserConfig)
         .then((result) => {
             // assign the message in our result to the message we initialized above
-            setCurrentUser(result.data.message);
+            setCurrentUser(result.data.user);
+        })
+        .catch((error) => {
+            error = new Error();
+        });
+
+      axios(getChatHistory)
+        .then((result) => {
+            setChat(result.data.messages)
         })
         .catch((error) => {
             error = new Error();
@@ -48,7 +69,8 @@ export default function Chat({ socket }) {
       const messageContent = {
         room: "room1",
         content: {
-            author: currentUser,
+            author: currentUser.userName,
+            userId: currentUser.userId,
             message: message,
         },
       };
@@ -66,7 +88,7 @@ export default function Chat({ socket }) {
                     <div
                         key={index}
                         className="messageContainer"
-                        id={msg.author === currentUser ? "You" : "Other"}
+                        id={msg.userId === currentUser.userId ? "You" : "Other"}
                     >
                         <div className="messageIndividual">
                           {msg.author}: {msg.message}

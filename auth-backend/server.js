@@ -38,7 +38,8 @@ io.on("connection", (socket) => {
       const messageData = new Message({
         room: data.room,
         author: data.content.author,
-        message: data.content.message
+        message: data.content.message,
+        userId: data.content.userId,
       });
 
       messageData.save()

@@ -3,12 +3,14 @@ const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto")
 
 const auth = require("./auth");
 
 // require database connection 
 const dbConnect = require("./db/dbConnect");
 const User = require("./db/userModel");
+const Message = require("./db/messageModel");
 
 // execute database connection 
 dbConnect();
@@ -39,11 +41,14 @@ app.get("/", (request, response, next) => {
 app.post("/register", (request, response) => {
   bcrypt.hash(request.body.password, 10)
   .then(async (hashedPassword) => {
+    // create unique ID for new users
+    const uniqueId = crypto.randomBytes(3*4).toString('base64')
     // create a new user instance and collect the data
     const user = new User({
       email: request.body.email,
       username: request.body.username,
       password: hashedPassword,
+      uniqueId
     });
 
     const usernameExists = await User.find({ username: request.body.username });
@@ -101,7 +106,7 @@ app.post("/login", (request, response) => {
         const token = jwt.sign(
           {
             userId: user._id,
-            userUsername: user.username,
+            userName: user.username,
           },
           "RANDOM-TOKEN",
           { expiresIn: "24h" }
@@ -147,9 +152,20 @@ app.get("/free-endpoint", (request, response) => {
 
 // authentication endpoint
 app.get("/auth-endpoint", auth, (request, response) => {
-  console.log(request)
+    console.log(request)
   // response.json({ message: "You are authorized to access me" });
-  response.json({ message: `${request.user.userUsername}` });
+  response.json({ user: request.user });
+});
+
+// fetch chat history
+app.get("/chat-history", (request, response) => {
+  try {
+    Message.find({room: request.query.room}).then((msg) => {
+      response.json({ messages: msg })
+    })
+  } catch (error) {
+    response.json({ message: error })
+  }
 });
 
 module.exports = app;
