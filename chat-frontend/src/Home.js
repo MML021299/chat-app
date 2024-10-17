@@ -3,7 +3,6 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import { Button, Row, Col } from "react-bootstrap";
 
-import Chat from "./components/Chat";
 import ChatWindow from "./components/ChatWindow";
 import ContactList from "./components/ContactList";
 
