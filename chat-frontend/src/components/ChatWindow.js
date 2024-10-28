@@ -17,8 +17,12 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     })
 
     const getChatHistory = {
-      method: "get",
-      url: `http://localhost:3001/chat-history?${params}`,
+      method: "post",
+      url: "http://localhost:3001/chat-history",
+      data: {
+        userId: currentUser.userId,
+        contactId: contact._id, 
+      },
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -33,12 +37,15 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
 
     const sendMessage = async () => {
         const messageContent = {
-          room: "room1",
-          content: {
-              author: currentUser.userName,
-              userId: currentUser.userId,
-              message: message,
-          },
+            // comment for now
+            // room: "room1",
+            content: {
+                author: currentUser.userName,
+                userId: currentUser.userId,
+                uniqueId: currentUser.uniqueId,
+                message: message,
+                contact: contact,
+            },
         };
         await socket.emit("send_message", messageContent);
         setChat((list) => [...list, messageContent.content]);
@@ -48,10 +55,10 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     useEffect(() => {
         axios(getChatHistory)
           .then((result) => {
-              setChat(result.data.messages)
+            setChat(result.data.messages)
           })
           .catch((error) => {
-              error = new Error();
+            error = new Error();
           });
   
         socket.emit("join_room", "room1");
@@ -59,7 +66,7 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
           setChat((list) => [...list, data]);
         });
         return () => socket.removeListener("receive_message");
-      }, [])
+    }, [contact])
 
     return (
         <div className="chat-window">

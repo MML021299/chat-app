@@ -2,6 +2,7 @@ const express = require('express');
 const server = express();
 
 const Message = require("./db/messageModel");
+const Room = require("./db/roomModel");
 
 const http = require("http");
 const cors = require("cors");
@@ -9,6 +10,8 @@ const { Server } = require("socket.io");
 server.use(cors())
 
 const servHttp = http.createServer(server);
+
+const crypto = require("crypto")
 
 let users = {};
 
@@ -34,12 +37,37 @@ io.on("connection", (socket) => {
       console.log(`User ${socket.id} Joined Room: ${data}`);
     });
   
-    socket.on("send_message", (data) => {
+    socket.on("send_message", async (data) => {
+      let roomId = crypto.randomBytes(3*4).toString('base64')
+
+      const existingRoom = await Room.find({ users: {$in: [data.content.userId, data.content.contact._id]} })
+      const users = [data.content.userId, data.content.contact._id]
+
+      if (existingRoom && existingRoom.length > 0) {
+        roomId = existingRoom.room
+      } else {
+        const roomData = new Room({
+          room: roomId,
+          users
+        });
+  
+        roomData.save()
+        .then(() => {
+          console.log("Room saved to database")
+          // console.log(data)
+          // socket.to(data.room).emit('receive_message', data.content)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+      }
+
       const messageData = new Message({
-        room: data.room,
+        room: roomId,
         author: data.content.author,
         message: data.content.message,
         userId: data.content.userId,
+        users,
       });
 
       messageData.save()

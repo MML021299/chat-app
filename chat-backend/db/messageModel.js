@@ -13,6 +13,9 @@ const messageSchema = new mongoose.Schema({
     userId: {
         type: String
     },
+    users: {
+        type: Array
+    }
 })
 
 module.exports = mongoose.model.Messages || mongoose.model("Messages", messageSchema)

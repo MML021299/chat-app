@@ -11,6 +11,7 @@ const auth = require("./auth");
 const dbConnect = require("./db/dbConnect");
 const User = require("./db/userModel");
 const Message = require("./db/messageModel");
+const Room = require("./db/roomModel");
 
 // execute database connection 
 dbConnect();
@@ -158,9 +159,11 @@ app.get("/auth-endpoint", auth, (request, response) => {
 });
 
 // fetch chat history
-app.get("/chat-history", (request, response) => {
+app.post("/chat-history", async (request, response) => {
   try {
-    Message.find({room: request.query.room}).then((msg) => {
+    const users = [request.body.userId, request.body.contactId]
+    
+    await Message.find({users: {$all: users}}).then((msg) => {
       response.json({ messages: msg })
     })
   } catch (error) {

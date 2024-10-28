@@ -15,7 +15,7 @@ export default function Home() {
     const [users, setUsers] = useState([]);
 
     const [chatHistory, setChatHistory] = useState({});
-    const [selectedContact, setSelectedContact] = useState(null);
+    const [selectedContact, setSelectedContact] = useState({});
 
     // set configurations for the API call here
     const getCurrentUserConfig = {
