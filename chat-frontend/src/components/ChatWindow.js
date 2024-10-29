@@ -8,6 +8,7 @@ const socket = io.connect("http://localhost:3002");
 const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     const [input, setInput] = useState('');
     const [message, setMessage] = useState('');
+    const [room, setRoom] = useState('');
     const [chat, setChat] = useState([]);
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
@@ -28,6 +29,18 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
       },
     };
 
+    const getRoom = {
+      method: "post",
+      url: "http://localhost:3001/get-room",
+      data: {
+        userId: currentUser.userId,
+        contactId: contact._id, 
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     const handleSend = () => {
         if (input) {
         onSend(input);
@@ -37,8 +50,7 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
 
     const sendMessage = async () => {
         const messageContent = {
-            // comment for now
-            // room: "room1",
+            room,
             content: {
                 author: currentUser.userName,
                 userId: currentUser.userId,
@@ -60,13 +72,61 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
           .catch((error) => {
             error = new Error();
           });
+
+        axios(getRoom)
+          .then((result) => {
+            setRoom(result.data.room)
+          })
+          .catch((error) => {
+            error = new Error();
+          });
   
-        socket.emit("join_room", "room1");
+        socket.emit("join_room", room);
         socket.on("receive_message", (data) => {
           setChat((list) => [...list, data]);
         });
         return () => socket.removeListener("receive_message");
-    }, [contact])
+    }, [contact, room])
+
+    // for testing only
+    // useEffect(() => {
+    //     axios(getChatHistory)
+    //       .then((result) => {
+    //         setChat(result.data.messages);
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //       });
+    
+    //     axios(getRoom)
+    //       .then((result) => {
+    //         console.log('result.data.room', result.data.room);
+    //         setRoom(result.data.room);
+    //       })
+    //       .catch((error) => {
+    //         console.error(error);
+    //       });
+    // }, [contact]);
+    
+    // useEffect(() => {
+    //     if (room) {
+    //         socket.emit("join_room", room);
+    //     }
+    
+    //     return () => {
+    //         socket.off("receive_message"); // Clean up listener
+    //     };
+    // }, [room]);
+    
+    // useEffect(() => {
+    //     socket.on("receive_message", (data) => {
+    //         setChat((list) => [...list, data]);
+    //     });
+    
+    //     return () => {
+    //         socket.off("receive_message"); // Clean up listener
+    //     };
+    // }, []);
 
     return (
         <div className="chat-window">

@@ -171,4 +171,17 @@ app.post("/chat-history", async (request, response) => {
   }
 });
 
+// fetch room
+app.post("/get-room", async (request, response) => {
+  try {
+    const users = [request.body.userId, request.body.contactId]
+
+    await Room.findOne({ users: {$all: users} }).then((room) => {
+      response.json({ room: room.room })
+    })
+  } catch (error) {
+    response.json({ message: error })
+  }
+});
+
 module.exports = app;

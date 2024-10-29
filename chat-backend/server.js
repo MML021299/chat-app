@@ -33,19 +33,18 @@ io.on("connection", (socket) => {
 
     socket.on("join_room", (data) => {
       socket.join(data);
-      console.log(data)
       console.log(`User ${socket.id} Joined Room: ${data}`);
     });
   
     socket.on("send_message", async (data) => {
-      let roomId = crypto.randomBytes(3*4).toString('base64')
-
-      const existingRoom = await Room.find({ users: {$in: [data.content.userId, data.content.contact._id]} })
+      let roomId
       const users = [data.content.userId, data.content.contact._id]
 
-      if (existingRoom && existingRoom.length > 0) {
-        roomId = existingRoom.room
+      // If user haven't messaged the contact user before, create new room
+      if (data.room) {
+        roomId = data.room
       } else {
+        roomId = crypto.randomBytes(3*4).toString('base64')
         const roomData = new Room({
           room: roomId,
           users
@@ -54,8 +53,6 @@ io.on("connection", (socket) => {
         roomData.save()
         .then(() => {
           console.log("Room saved to database")
-          // console.log(data)
-          // socket.to(data.room).emit('receive_message', data.content)
         })
         .catch((err) => {
           console.log(err)
