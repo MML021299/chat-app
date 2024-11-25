@@ -133,24 +133,33 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
         <div className="chat-window">
             <h2 style={{textAlign: 'end'}}>{contact.username}</h2>
             <div className="messages">
-                {chat.map((msg, index) => (
-                    <div>
-                        <div className='timestamp'>
-                            {
-                                moment(msg.dateCreated).isSame(moment(), 'day')
-                                ? moment(msg.dateCreated).format('hh:mm A')
-                                : moment(msg.dateCreated).isAfter(moment().subtract(4, 'days'))
-                                ? moment(msg.dateCreated).format('ddd [at] hh:mm A')
-                                : moment(moment()).diff(msg.dateCreated, 'months') >= 6
-                                ? moment(msg.dateCreated).format('D MMM YYYY [at] hh:mm A')
-                                : moment(msg.dateCreated).format('D MMM [at] hh:mm A')
-                            }
+                {chat.map((msg, index) => {
+                    const prevMsg = chat[index - 1];
+                    const timeDifference = prevMsg
+                        ? moment(msg.dateCreated).diff(moment(prevMsg.dateCreated), 'minutes')
+                        : null;
+    
+                    return (
+                        <div key={index}>
+                            {timeDifference === null || timeDifference >= 30 ? (
+                                <div className="timestamp">
+                                    {
+                                        moment(msg.dateCreated).isSame(moment(), 'day')
+                                        ? moment(msg.dateCreated).format('hh:mm A')
+                                        : moment(msg.dateCreated).isAfter(moment().subtract(4, 'days'))
+                                        ? moment(msg.dateCreated).format('ddd [at] hh:mm A')
+                                        : moment(moment()).diff(msg.dateCreated, 'months') >= 6
+                                        ? moment(msg.dateCreated).format('D MMM YYYY [at] hh:mm A')
+                                        : moment(msg.dateCreated).format('D MMM [at] hh:mm A')
+                                    }
+                                </div>
+                            ) : null}
+                            <div className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`}>
+                                {msg.message}
+                            </div>
                         </div>
-                        <div key={index} className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`}>
-                            {msg.message}
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
             <div className="input-container">
                 <input
