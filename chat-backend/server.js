@@ -65,6 +65,7 @@ io.on("connection", (socket) => {
         message: data.content.message,
         userId: data.content.userId,
         users,
+        dateCreated: new Date().toISOString()
       });
 
       messageData.save()

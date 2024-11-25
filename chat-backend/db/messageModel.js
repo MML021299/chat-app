@@ -15,6 +15,9 @@ const messageSchema = new mongoose.Schema({
     },
     users: {
         type: Array
+    },
+    dateCreated: {
+        type: String
     }
 })
 
