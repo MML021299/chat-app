@@ -116,11 +116,20 @@
   padding: 8px 12px; /* Padding for each message */
   margin: 5px 0; /* Space between messages */
   border-radius: 6px; /* Rounded corners for messages */
+  width: fit-content; /* Set message width */
   max-width: 70%; /* Limit message width */
   word-wrap: break-word; /* Wrap long words */
   overflow-wrap: break-word; /* Ensure long words break properly */
   white-space: pre-wrap; /* Preserve whitespace and wrap */
   align-self: flex-start; /* Default alignment */
+}
+
+.timestamp {
+  font-size: 0.75rem; /* Smaller font size for timestamp */
+  color: #888; /* Light gray color for timestamp */
+  text-align: center; /* Center align the timestamp */
+  margin-bottom: 5px; /* Space between timestamp and message */
+  width: 100%;
 }
 
 /* Style for received messages (left) */
@@ -131,13 +140,7 @@
 /* Style for sent messages (right) */
 .sent {
   background-color: #ffecb3; /* Light yellow for sent messages */
-  align-self: flex-end; /* Align to the right */
-}
-
-/* Style for sent messages (right) */
-.sent {
-  background-color: #ffecb3; /* Light yellow for sent messages */
-  align-self: flex-end; /* Align to the right */
+  justify-self: flex-end; /* Align to the right */
 }
 
 button {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Cookies from "universal-cookie";
+import moment from 'moment';
 
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:3002");
@@ -133,8 +134,21 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
             <h2 style={{textAlign: 'end'}}>{contact.username}</h2>
             <div className="messages">
                 {chat.map((msg, index) => (
-                    <div key={index} className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`}>
-                        {msg.message}
+                    <div>
+                        <div className='timestamp'>
+                            {
+                                moment(msg.dateCreated).isSame(moment(), 'day')
+                                ? moment(msg.dateCreated).format('hh:mm A')
+                                : moment(msg.dateCreated).isAfter(moment().subtract(4, 'days'))
+                                ? moment(msg.dateCreated).format('ddd [at] hh:mm A')
+                                : moment(moment()).diff(msg.dateCreated, 'months') >= 6
+                                ? moment(msg.dateCreated).format('D MMM YYYY [at] hh:mm A')
+                                : moment(msg.dateCreated).format('D MMM [at] hh:mm A')
+                            }
+                        </div>
+                        <div key={index} className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`}>
+                            {msg.message}
+                        </div>
                     </div>
                 ))}
             </div>
