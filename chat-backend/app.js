@@ -163,9 +163,11 @@ app.post("/chat-history", async (request, response) => {
   try {
     const users = [request.body.userId, request.body.contactId]
     
-    await Message.find({users: {$all: users}}).then((msg) => {
-      response.json({ messages: msg })
-    })
+    await Message.find({users: {$all: users}})
+      .sort({dateCreated: 1})
+      .then((msg) => {
+        response.json({ messages: msg })
+      })
   } catch (error) {
     response.json({ message: error })
   }
