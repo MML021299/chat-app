@@ -11,6 +11,7 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     const [message, setMessage] = useState('');
     const [room, setRoom] = useState('');
     const [chat, setChat] = useState([]);
+    const [visibleTimestamps, setVisibleTimestamps] = useState({});
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
 
@@ -47,6 +48,13 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
         onSend(input);
         setInput('');
         }
+    };
+
+    const toggleTimestampVisibility = (index) => {
+        setVisibleTimestamps((prev) => ({
+            ...prev,
+            [index]: !prev[index]
+        }));
     };
 
     const sendMessage = async () => {
@@ -131,17 +139,19 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
 
     return (
         <div className="chat-window">
-            <h2 style={{textAlign: 'end'}}>{contact.username}</h2>
+            <h2 style={{ textAlign: 'end' }}>{contact.username}</h2>
             <div className="messages">
                 {chat.map((msg, index) => {
                     const prevMsg = chat[index - 1];
                     const timeDifference = prevMsg
                         ? moment(msg.dateCreated).diff(moment(prevMsg.dateCreated), 'minutes')
                         : null;
-    
+
+                    const timestampVisible = visibleTimestamps[index];
+
                     return (
                         <div key={index}>
-                            {timeDifference === null || timeDifference >= 30 ? (
+                            {(timeDifference === null || timeDifference >= 30 || timestampVisible) && (
                                 <div className="timestamp">
                                     {
                                         moment(msg.dateCreated).isSame(moment(), 'day')
@@ -153,8 +163,8 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
                                         : moment(msg.dateCreated).format('D MMM [at] hh:mm A')
                                     }
                                 </div>
-                            ) : null}
-                            <div className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`}>
+                            )}
+                            <div className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`} onClick={() => toggleTimestampVisibility(index)}>
                                 {msg.message}
                             </div>
                         </div>
