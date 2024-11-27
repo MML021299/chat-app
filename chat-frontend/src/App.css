@@ -134,12 +134,12 @@
 
 /* Style for received messages (left) */
 .received {
-  background-color: #e0f7fa; /* Light blue for received messages */
+  background-color: #ffecb3; /* Light yellow for sent messages */
 }
 
 /* Style for sent messages (right) */
 .sent {
-  background-color: #ffecb3; /* Light yellow for sent messages */
+  background-color: #e0f7fa; /* Light blue for received messages */
   justify-self: flex-end; /* Align to the right */
 }
 

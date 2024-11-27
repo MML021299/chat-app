@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from "axios";
 import Cookies from "universal-cookie";
 import moment from 'moment';
@@ -12,6 +12,8 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     const [room, setRoom] = useState('');
     const [chat, setChat] = useState([]);
     const [visibleTimestamps, setVisibleTimestamps] = useState({});
+    const containerRef = useRef(null);
+
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
 
@@ -74,6 +76,12 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     };
 
     useEffect(() => {
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+    }, [chat])
+
+    useEffect(() => {
         axios(getChatHistory)
           .then((result) => {
             setChat(result.data.messages)
@@ -94,6 +102,11 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
         socket.on("receive_message", (data) => {
           setChat((list) => [...list, data]);
         });
+
+        if (containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+
         return () => socket.removeListener("receive_message");
     }, [contact, room])
 
@@ -140,7 +153,7 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
     return (
         <div className="chat-window">
             <h2 style={{ textAlign: 'end' }}>{contact.username}</h2>
-            <div className="messages">
+            <div className="messages" ref={containerRef}>
                 {chat.map((msg, index) => {
                     const prevMsg = chat[index - 1];
                     const timeDifference = prevMsg
@@ -164,7 +177,7 @@ const ChatWindow = ({ currentUser, contact, messages, onSend }) => {
                                     }
                                 </div>
                             )}
-                            <div className={`message ${msg.userId === currentUser.userId ? 'received' : 'sent'}`} onClick={() => toggleTimestampVisibility(index)}>
+                            <div className={`message ${msg.userId === currentUser.userId ? 'sent' : 'received'}`} onClick={() => toggleTimestampVisibility(index)}>
                                 {msg.message}
                             </div>
                         </div>
